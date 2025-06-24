@@ -1,0 +1,104 @@
+# 📘 2.7 스코프 (Scope)
+
+스코프(Scope)란 **변수와 함수가 영향을 미치는 범위**를 말한다.  
+자바스크립트에서는 크게 **전역 스코프**, **지역 스코프**, **함수 스코프**, **블록 스코프**가 있다.
+
+---
+
+## ✅ 1. 전역 스코프 (Global Scope)
+
+- 어디에서나 접근 가능한 범위를 말함.
+- 전역에서 선언된 변수는 모든 곳에서 사용 가능하다.
+
+````js
+let globalNum = 100; // 전역 변수 선언
+
+function testFunc() {
+  console.log(globalNum); // 함수 내부에서도 전역 변수 접근 가능
+}
+
+testFunc(); // 함수 호출
+console.log(globalNum); // 함수 외부에서도 접근 가능
+
+---
+
+## ✅ 2. 지역 스코프 (Local Scope)
+- 특정 지역에서만 유효한 변수 범위
+- 외부에서는 접근할 수 없다.
+
+```js
+let globalNum = 100; // 전역 변수
+
+function testFunc() {
+  let innerNum = 50; // 지역 변수
+  console.log(globalNum); // 전역 변수 접근 가능
+  console.log(innerNum);  // 지역 변수 접근 가능
+}
+
+testFunc();
+
+console.log(globalNum);  // 전역 변수 접근 가능
+console.log(innerNum);   // ❌ 지역 변수 접근 불가 (에러 발생)
+````
+
+---
+
+## ✅ 3. 스코프 중첩 (Nested Scope)
+
+- 함수 안에 함수가 있을 경우, 안쪽 함수는 바깥 변수들에 접근 가능하다.
+
+```js
+let global = "나는 전역 변수입니다";
+
+function outerFunction() {
+  let outer = "나는 외부 함수의 변수입니다";
+
+  function innerFunction() {
+    let inner = "나는 내부 함수의 변수입니다";
+    console.log(global); // ✅ 전역
+    console.log(outer); // ✅ 외부 함수의 변수
+    console.log(inner); // ✅ 내부 함수의 변수
+  }
+
+  innerFunction();
+  console.log(global); // ✅
+  console.log(outer); // ✅
+  console.log(inner); // ❌ 내부 함수의 변수 (접근 불가)
+}
+
+outerFunction();
+```
+
+---
+
+## ✅ 4. 함수 스코프(Function Scope)
+
+- `var`로 선언된 변수는 함수 전체 유효하다.
+- `let`, `const` 블록스코프만 가진다.
+
+```js
+function print() {
+  for (let i = 0; i < 10; i++) {
+    console.log(i); // i는 for 블록 내부에서만 사용 가능
+  }
+
+  console.log(i); // ❌ 에러 (let은 블록 스코프)
+}
+print();
+```
+
+---
+
+## ✅ 5. 블록 스코프 (Block Scope)
+
+- `let`, `const`는 블록({}) 내부에서만 유효하다.
+- `var` 는 함수 전체에 유효하다.
+
+```js
+var num = 10; // 함수 스코프
+let num = 100; // 블록 스코프 (에러 발생 가능: 중복 선언)
+
+console.log(num); // 가장 가까운 num이 출력됨
+```
+
+❗주의: 위 코드에서 var와 let은 동시에 같은 스코프에서 선언하면 에러가 발생한다.
