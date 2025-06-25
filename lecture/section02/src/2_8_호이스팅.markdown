@@ -1,0 +1,74 @@
+# 📘 2.8 호이스팅 (Hoisting)
+
+---
+
+## 🔍 개념
+
+**호이스팅(Hoisting)**이란,  
+자바스크립트가 코드를 실행하기 전 **변수, 함수 선언 등을 해당 스코프의 최상단으로 끌어올리는 동작**을 말한다.
+
+- 코드가 위에서 아래로 순차적으로 실행되기 전,
+- 변수와 함수의 "선언부"가 스코프의 맨 위로 올라감.
+
+---
+
+## ✅ 함수 호이스팅
+
+- 함수 **선언문**(`function foo() {}`)은 전체 스코프의 최상단으로 끌어올려진다.
+- 따라서 **함수 선언문 아래에 호출 코드가 있어도** 에러 없이 동작한다.
+
+```js
+connectStriongs("study", "hoisting"); // ✅ 정상 작동
+
+function connectStriongs(str1, str2) {
+  console.log(str1 + str2);
+}
+```
+
+## ✅ 선언문 기반 함수는 위에서 호출해도 문제 없음.
+
+⚠️ 함수 표현식은 예외!
+
+```js
+foo(); // ❌ TypeError: foo is not a function
+
+const foo = function () {
+  console.log("hello");
+};
+```
+
+- `const`, `let`, `var` 로 선언된 함수 표현식은 변수 호이스팅 규칙을 따른다.
+- 선언 전에 호출하면 에러가 발생한다.
+
+---
+
+✅ 변수 호이스팅
+
+- `var` 로 선언된 변수는 선언만 끌어올려지고, 초기화는 안된다. -> `undefined`로 출력된다.
+- `let`, `const`는 호이스팅 되지만, TDZ(Temporal Dead Zone)때문에 선언 전 접근 시 에러가 발생한다.
+
+```js
+console.log(num1); // ❗ undefined (var인 경우)
+var num1 = 123;
+
+console.log(num2); // ❌ ReferenceError (let/const인 경우)
+let num2 = 456;
+```
+
+---
+
+## 🔬 메모리 관점에서 보는 차이
+
+| 선언 방식 | 호이스팅 | TDZ | 초기화 시점                            |
+| --------- | -------- | --- | -------------------------------------- |
+| `var`     | O        | X   | 선언 전에 `undefined`로 초기화         |
+| `let`     | O        | O   | 선언문 실행 시 초기화                  |
+| `const`   | O        | O   | 선언문 실행 시 초기화 + 반드시 값 필요 |
+
+---
+
+정리 요약
+
+- 함수 선언문은 어디서든 호출 가능 (스코프 최상단으로 끌어올려짐).
+- 함수 표현식은 변수 호이스팅 대상이므로 선언 전에 호출 불가.
+- var는 undefined 상태로 호이스팅되지만, let/const는 TDZ에 걸려 ReferenceError 발생.
