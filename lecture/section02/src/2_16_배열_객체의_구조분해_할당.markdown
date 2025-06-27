@@ -1,0 +1,112 @@
+### 2_16 자바스크립트 배열과 객체의 구조 분해 할당
+
+---
+
+## ✅ 배열의 구조 분해 할당
+
+### 📌 기본 사용법
+
+```js
+let colors = ["green", "blue", "purple"];
+
+// 일반 방식
+// let c1 = colors[0];
+// let c2 = colors[1];
+// let c3 = colors[2];
+
+// 구조 분해 할당
+let [c1, c2, c3] = colors;
+
+console.log(c1); // "green"
+console.log(c2); // "blue"
+console.log(c3); // "purple"
+```
+
+---
+
+## ✅ 선언과 할당 분리, 기본값 지정
+
+```js
+let arr1, arr2, arr3, arr4;
+
+[arr1, arr2, arr3, arr4 = "yellow"] = ["green", "blue", "purple"];
+
+console.log(arr1); // "green"
+console.log(arr2); // "blue"
+console.log(arr3); // "purple"
+console.log(arr4); // "yellow" (기본값이 할당됨)
+```
+
+---
+
+## ✅ 값 교환 (Swap)
+
+- **정의**: 배열을 정렬 (기본은 유니코드 기준 문자열 정렬)
+- 숫자 정렬은 비교 함수 필요
+
+```js
+let a = 10;
+let b = 5;
+
+// 구조 분해 할당으로 값 교환
+[a, b] = [b, a];
+// 값을 교환하기 위해서는 temp와 같은 임시변수가 필요함.
+// temp = a;
+// a = b;
+// b = temp;
+// console.log(a, b);
+console.log(a); // 5
+console.log(b); // 10
+```
+
+---
+
+## ✅ 객체의 구조 분해 할당
+
+```js
+let colors2 = {
+  c1: "green",
+  c2: "blue",
+  c3: "red",
+};
+
+// 구조 분해 할당 + 변수 이름 바꾸기
+let { c1: objC1, c2: objC2, c3: objC3 } = colors2;
+
+console.log(objC1); // "green"
+console.log(objC2); // "blue"
+console.log(objC3); // "red"
+```
+
+---
+
+## ✅ 다른 이름으로 할당 + 기본값 지정
+
+```js
+let {
+  c1: color1,
+  c2: color3,
+  c3: color4,
+  c4: colorDefault = "yellow", // 없는 값에 기본값 지정
+} = colors2;
+
+console.log(color1); // "green"
+console.log(color3); // "blue"
+console.log(color4); // "red"
+console.log(colorDefault); // "yellow" (기본값)
+```
+
+---
+
+## 📝 정리 요약
+
+## ✅ 정리 요약
+
+| 분해 대상 | 문법 예시                       | 특징                              |
+| --------- | ------------------------------- | --------------------------------- |
+| 배열      | `[a, b] = [1, 2]`               | 순서대로 값이 변수에 할당됨       |
+| 객체      | `{x, y} = {x:1, y:2}`           | 이름 기준으로 변수에 할당됨       |
+| 기본값    | `[a = 0] = []` / `{x = 3} = {}` | 값이 없을 때 기본값 지정 가능     |
+| 변수이름  | `{x: newX} = obj`               | `x`를 `newX`라는 변수로 받음      |
+| 값 교환   | `[a, b] = [b, a]`               | 임시 변수 없이 간편하게 교환 가능 |
+|  |
