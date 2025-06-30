@@ -1,150 +1,177 @@
-# 🚀 3_2 프로미스 객체
+
+# 3_2 📝 DOM API 주요 메서드와 사용법
 
 ---
 
-## ✅ Promise란?
+## 1. getElementById
 
-- 비동기 작업의 **성공/실패**를 처리하는 객체
-- 콜백 지옥 문제를 해결하기 위해 등장
-- **3가지 상태**: Pending(대기), Fulfilled(성공), Rejected(실패)
+- 특정 id 속성을 가진 요소를 하나만 가져온다.
+- 반환값: 해당 id를 가진 요소 객체 (없으면 null)
 
----
-
-## ✅ Promise 생성자 함수 예시
-
-```js
-const executor = (resolve, reject) => {
-  setTimeout(() => {
-    resolve("성공"); // 성공 시
-    reject("실패"); // 실패 시 (resolve가 먼저 호출되면 reject는 무시됨)
-  }, 3000);
-};
-
-const promise = new Promise(executor);
-
-promise
-  .then((result) => {
-    console.log(result); // "성공"
-  })
-  .catch((error) => {
-    console.log(error); // "실패" (resolve가 먼저 실행되면 무시됨)
-  });
+```html
+<!-- 예시 HTML -->
+<div id="color">색상</div>
 ```
 
-## 🤯 콜백 지옥 (Callback Hell) 문제
-
-- 콜백 함수가 중첩되어 코드가 복잡해진다.
-- 가독성이 떨어지고 유지보수가 어렵다.
-
-# ❌ 콜백 지옥 예시
-
 ```js
-workA(10, (resA) => {
-  console.log(`workA : ${resA}`);
-  workB(resA, (resB) => {
-    console.log(`workB: ${resB}`);
-    workC(resB, (resC) => {
-      console.log(`workC : ${resC}`);
-    });
-  });
-});
+let $color = document.getElementById('color');
+console.log($color); // <div id="color">색상</div>
 ```
 
 ---
 
-# ✅ Promise로 개선 (기본 버전)
+## 2. querySelector
+
+- CSS 선택자 문법으로 일치하는 첫 번째 요소를 가져온다.
+- 반환값: 일치하는 첫 번째 요소 객체 (없으면 null)
+
+```html
+<!-- 예시 HTML -->
+<div class="animal-info">동물 정보</div>
+<div id="age">3살</div>
+```
 
 ```js
-const workA = (value) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(value + 5);
-    }, 5000);
-  });
-};
+let $animalInfo = document.querySelector('div.animal-info');
+console.log($animalInfo); // <div class="animal-info">동물 정보</div>
 
-const workB = (value) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(value - 3);
-    }, 3000);
-  });
-};
-
-const workC = (value) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(value + 10);
-    }, 10000);
-  });
-};
-
-// 여전히 중첩 구조
-// workA(10).then((resA) => {
-//   console.log(`workA : ${resA}`);
-//   workB(resA).then((resB) => {
-//     console.log(`workB : ${resB}`);
-//     workC(resB).then((resC) => {
-//       console.log(`workC : ${resC}`);
-//     });
-//   });
-// });
+let ageElement = document.querySelector('div#age');
+console.log(ageElement); // <div id="age">3살</div>
 ```
 
 ---
 
-# 💡 Promise Chaining (체이닝)
+## 3. querySelectorAll
 
-```js
-workA(10)
-  .then((resA) => {
-    console.log(`workA : ${resA}`); // 15
-    return workB(resA);
-  })
-  .then((resB) => {
-    console.log(`workB : ${resB}`); // 12
-    return workC(resB);
-  })
-  .then((resC) => {
-    console.log(`workC : ${resC}`); // 22
-  })
-  .catch((error) => {
-    console.log("에러 발생:", error);
-  });
+- CSS 선택자 문법으로 일치하는 모든 요소를 NodeList로 반환한다.
+- 반환값: NodeList(유사 배열)
+
+```html
+<!-- 예시 HTML -->
+<div class="info-item">A</div>
+<div class="info-item">B</div>
+<div class="info-item">C</div>
 ```
 
-# 실행 흐름
-
-1. workA(10) → 5초 후 15 반환
-2. then: 15 출력 후 workB(15)
-3. workB(15) → 3초 후 12 반환
-4. then: 12 출력 후 workC(12)
-5. workC(12) → 10초 후 22 반환
-6. then: 22 출력
+```js
+let $infoItem = document.querySelectorAll('div.info-item');
+console.log($infoItem); // NodeList(3) [div.info-item, div.info-item, div.info-item]
+```
 
 ---
 
-# 🌟 Promise Chaining 장점
+## 4. getElementsByClassName
 
-- 코드가 평면적으로 작성되어 가독성이 향상된다.
-- `.catch()` 하나로 모든 에러가 처리한다.
-- 유지보수가 쉽다.
-- 작업 순서가 명확하다.
+- 특정 클래스를 가진 모든 요소를 HTMLCollection으로 반환한다.
+- 반환값: HTMLCollection(유사 배열)
+
+```html
+<!-- 예시 HTML -->
+<div class="info-item">A</div>
+<div class="info-item">B</div>
+<div class="info-item">C</div>
+```
+
+```js
+let $infoItem = document.getElementsByClassName('info-item');
+console.log($infoItem); // HTMLCollection(3) [div.info-item, div.info-item, div.info-item]
+```
 
 ---
 
-# 💬 Promise의 상태
+## 5. getElementsByTagName
 
-1. Pending: 대기 중
-2. Fulfilled: 작업 성공
-3. Rejected: 작업 실패
+- 특정 태그명을 가진 모든 요소를 HTMLCollection으로 반환한다.
+- 반환값: HTMLCollection(유사 배열)
+
+```html
+<!-- 예시 HTML -->
+<div>A</div>
+<div>B</div>
+<div>C</div>
+```
+
+```js
+let $infoItem = document.getElementsByTagName('div');
+console.log($infoItem); // HTMLCollection(3) [div, div, div]
+```
 
 ---
 
-## 🔧 Promise 주요 메서드
+# 🛠️ DOM 요소 조작 예시
 
-- `.then()` : 성공 시 실행
-- `.catch()` : 실패 시 실행
-- `.finally()` : 성공/실패 상관없이 항상 실행
-- `.all()` : 여러 Promise 병렬 실행
-- `.race()` : 가장 먼저 완료된 Promise 처리
+## 1. className 변경
+
+```html
+<div id="name">이름</div>
+```
+
+```js
+let $name = document.getElementById('name');
+$name.className = 'dog-name';
+console.log($name); // <div id="name" class="dog-name">이름</div>
+console.log($name.className); // 'dog-name'
+```
+
+---
+
+## 2. id 변경
+
+```html
+<div class="animal-info">동물 정보</div>
+```
+
+```js
+let $animalInfo = document.querySelector('div.animal-info');
+$animalInfo.id = "animal";
+console.log($animalInfo); // <div class="animal-info" id="animal">동물 정보</div>
+console.log($animalInfo.id); // 'animal'
+```
+
+---
+
+## 3. classList로 클래스 추가/제거
+
+```html
+<div id="color" class="info-item">색상</div>
+```
+
+```js
+let $color = document.getElementById('color');
+$color.classList.remove('info-item'); // 'info-item' 클래스 제거
+$color.classList.add('dog-color');    // 'dog-color' 클래스 추가
+console.log($color.classList); // DOMTokenList(1) ['dog-color']
+```
+
+---
+
+## 4. textContent로 텍스트 변경
+
+```html
+<div id="age">3살</div>
+```
+
+```js
+let $age = document.getElementById('age');
+$age.textContent = "5살";
+console.log($age); // <div id="age">5살</div>
+```
+
+---
+
+## 5. style 속성으로 인라인 스타일 변경
+
+```html
+<div id="color">색상</div>
+```
+
+```js
+let $color = document.getElementById('color');
+$color.style.color = 'blue'; // 글자색을 파란색으로 변경
+$color.style.fontSize = "30px"; // 글자 크기를 30px로 변경
+// 결과: <div id="color" style="color: blue; font-size: 30px;">색상</div>
+```
+
+---
+
+> 위의 DOM API들은 웹 페이지의 요소를 동적으로 탐색하고, 속성/클래스/스타일/텍스트 등을 자유롭게 변경할 수 있게 해줍니다. 콘솔에서 각 단계별로 결과를 확인하면, 실제로 요소가 어떻게 바뀌는지 쉽게 알 수 있습니다.
