@@ -1,127 +1,85 @@
-## ✅ 3*1*비동기 처리
-
-### 동기 (synchronous)
-
-- 하나의 작업이 실행되는 동안 다른 작업을 수행하지 않는 방식
-- **예시**: 식당에서 주문을 받음 -> 요리를 완성 -> 다음 주문을 받는방식(순차적)
-- **장점**: 순서가 보장되고 예측 가능하다.
-- **단점**: 하나의 작업이 오래 걸리면 전체가 멈춘다.
+## 📝 4_4다양한 폼(Form) 조작 방법 정리
 
 ---
 
-### 비동기 (asynchronous)
+## 1. 폼 요소란?
 
-- 작업이 종료되기를 기다리지 않고 다음 작업을 병렬적으로 수행한다.
-- **예시**: 식당에서 주문을 받고 -> 요리를 시작 -> 다른 주문도 받으면서 나가는 순서는 순차적이지 않음
-- **장점**: 효율적이고 사용자 경험이 좋다.
-- **단점** : 순서가 보장되지 않고 복잡할 수 있다.
+- **폼(Form)**: 사용자와 상호작용하는 HTML 요소들의 집합
+- 대표적인 폼 요소: `input`, `select`, `textarea`, `button`
 
 ---
 
-## 🧵 싱글 스레드, 멀티 스레드
-
-- **스레드란?** 프로그램 내에서 실행되는 작업의 단위
-- **싱글 스레드** : 한 번에 하나의 작업만 처리한다.
-- **멀티 스레드** : 여러 작업을 동시에 처리한다.
-
-### 자바스크립트가 싱글 스레드 인 이유
-
-1. 브라우저 환경에서 안정성 확보
-2. DOM 조작의 복잡성 방지
-3. 예측 가능한 실행 흐름
-   > 하지만 자바스크립트는 비동기 처리를 통해 "멀티 스레드처럼" 동작할 수 있다!
-
----
-
-## ⚙️ 비동기 작업 예제
+## 2. 주요 폼 요소 선택 및 값 읽기/쓰기
 
 ```js
-const workA = () => {
-  setTimeout(() => {
-    console.log("workA");
-  }, 5000); // 5초 후 실행
-};
-const workB = () => {
-  setTimeout(() => {
-    console.log("workB");
-  }, 3000); // 3초 후 실행
-};
-const workC = () => {
-  setTimeout(() => {
-    console.log("workC");
-  }, 10000); // 10초 후 실행
-};
-const workD = () => {
-  console.log("workD"); // 즉시 실행 (동기)
-};
+// id로 input 요소 선택
+const $userName = document.getElementById('userName');
+const $password = document.getElementById('password');
 
-workA();
-workB();
-workC();
-workD();
+// value 속성: input, select, textarea 등 폼 요소의 현재 값을 읽거나 쓸 때 사용
+$userName.value = "요다"; // 입력창에 기본값을 미리 넣기
+let name = $userName.value; // 입력된 값을 읽어오기
 ```
 
-실행순서
-
-1. `workD()` -> 즉시 실행
-2. `workB()` -> 3초 후
-3. `workA()` -> 5초 후
-4. `workC()` -> 10초 후
-
 ---
 
-## ⏰ 콜백 함수를 사용한 비동기 처리
+## 3. 버튼 클릭 이벤트로 값 읽기
 
 ```js
-const work = (callback) => {
-  setTimeout(() => {
-    console.log("비동기");
-    callback(); // 3초 후 콜백 실행
-  }, 3000);
-};
-
-work(() => {
-  console.log("종료");
+const $loginBtn = document.querySelector('button');
+$loginBtn.addEventListener('click', () => {
+  // 버튼 클릭 시 input에 입력된 값 출력
+  console.log($userName.value);
+  console.log($password.value);
 });
 ```
 
-실행흐름
+---
 
-1. `work()` 호출
-2. `setTimeout` 시작 (3초 대기)
-3. 3초 후 "비동기 " 출력
-4. 콜백 함수 실행 -> "종료" 출력
+## 4. input, select, textarea의 실시간 값 감지
+
+- `input` 이벤트: 값이 바뀔 때마다(한 글자씩 입력/삭제할 때마다) 실행
+- `change` 이벤트: 값이 최종적으로 바뀌었을 때(포커스가 바뀌거나 엔터 등) 실행
+
+```js
+$password.addEventListener('input', (event) => {
+  console.log(event.target.value); // 실시간으로 입력된 비밀번호 출력
+});
+```
 
 ---
 
-## 💡 콜백 함수의 장단점
+## 5. select 요소의 옵션 삭제
 
-장점
-
-1. 비동기 작업 완료 후 원하는 동작 수행
-2. 순서 제어가 가능하다.
-
-단점
-
-1. 중첩으로 인해 코드가 복잡해진다.
-2. 에러 처리가 어렵다.
-3. 가독성이 떨어진다.
+```js
+const $fruitSelect = document.getElementById('fruitSelect');
+$fruitSelect.remove(1); // 두 번째 옵션(인덱스 1) 삭제
+```
 
 ---
 
-## 🌐 실제 비동기 처리 예시
+## 6. 주요 메서드/이벤트 정리
 
-- API 호출 (서버에서 데이터 가져오기)
-- 파일 읽기/쓰기
-- 타이머 (setTimeout, setInterval)
-- 이벤트 리스너 (클릭, 키보드 입력 등)
-- 애니메이션
+| 메서드/이벤트                | 설명                                                         |
+|------------------------------|--------------------------------------------------------------|
+| `getElementById('id')`       | id로 요소 선택 (항상 하나만)                                 |
+| `querySelector('선택자')`    | CSS 선택자 문법으로 요소 선택 (여러 개 중 첫 번째만)          |
+| `addEventListener('이벤트')` | 해당 이벤트 발생 시 함수 실행                                 |
+| `input.value`                | input, select, textarea의 현재 값 읽기/쓰기                   |
+| `addEventListener('input')`  | 값이 바뀔 때마다(실시간) 실행                                 |
+| `addEventListener('change')` | 값이 최종적으로 바뀔 때(포커스 아웃, 엔터 등) 실행            |
+| `select.remove(index)`       | select 요소의 옵션 중 index번째(0부터 시작)를 삭제            |
 
 ---
 
-## 🚀 비동기 처리가 필요한 이유
+## 7. 실무 팁 & 주의사항
 
-1. 사용자 경험 향상 (페이지가 멈추지 않는다)
-2. 효율적인 리소스 사용
-3. 네트워크 요청 처리를 한다.
-4. 복잡한 작업의 병렬 처리
+- input.value로 입력값을 읽고 쓸 수 있음
+- 버튼 클릭, 엔터 입력, 실시간 입력 등 다양한 이벤트를 조합해 폼을 자유롭게 제어할 수 있음
+- form 태그의 submit 이벤트를 활용하면, 엔터로도 폼 전송이 가능
+- select, input, textarea 등 폼 요소는 value 속성으로 값 제어
+- **input.value는 문자열만 다룸** (숫자 입력도 문자열로 반환)
+
+---
+
+> 폼 조작은 사용자 입력을 받아 처리하는 웹 개발의 핵심입니다. 다양한 이벤트와 메서드를 조합해, 실시간 반응형 폼을 만들 수 있습니다!
