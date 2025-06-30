@@ -1,62 +1,63 @@
-// 3_4 API 호출
-// api란?
-// API(Application Programming Interface)는 프로그램끼리 소통할 수 있게 해주는 '약속'입니다.
-// 여기서는 웹에서 클라이언트(브라우저)와 서버가 데이터를 주고받는 통로 역할을 합니다.
-// 즉, 웹 브라우저(클라이언트)가 서버에 데이터를 요청하고, 서버가 응답을 보내는 구조입니다.
+// 폼(Form)이란
+// 사용자와의 상호작용을 가능하게 하는 HTML 요소
+// input, select, textarea 
+// - input: 한 줄 텍스트, 체크박스, 라디오 등 다양한 입력을 받을 수 있음
+// - select: 여러 옵션 중 하나를 선택할 수 있는 드롭다운
+// - textarea: 여러 줄 텍스트 입력
 
-// 클라이언트와 서버 통신
-// 웹 브라우저(클라이언트)는 네트워크를 통해 서버에 요청(request)을 보내고,
-// 서버는 요청에 맞는 데이터를 찾아 응답(response)합니다.
-// 이 과정에서 데이터를 주고받는 규칙이 바로 API입니다.
+// const $fruitSelect = document.getElementById('fruitSelect');
+// - id가 'fruitSelect'인 select 요소를 선택
 
-// 웹 브라우저에서 네트워크를 통해 데이터를 제공하는 서버와 통신한다.
-// 브라우저는 서버로부터 정보를 제공받는 클라이언트라고 할 수 있다. 웹이나 앱을 사용할 때 원하는 데이터를 요청하고 전달받는 과정이다.
-// → 사용자가 웹사이트에서 버튼을 누르거나 페이지를 열 때, 서버에 데이터를 요청하고 받아오는 것이 바로 API 호출입니다.
+// $fruitSelect.addEventListener('change', (event) => {
+//   console.log(event.target.value);
+// });
+// - select의 선택값이 바뀔 때마다(사용자가 옵션을 바꿀 때마다) 실행됨
+// - event.target.value: 현재 선택된 옵션의 값을 가져옴
 
-// 커피를 주문하는 방식 (API의 비유)
-// 손님(클라이언트)이 원하는 커피를 주문(요청) -> 바리스타(서버)가 원두(데이터)를 선택한다.
-// 바리스타가 창고(데이터베이스)에서 원두를 가져오고 커피(응답)를 제작 후 전달하는 과정과 유사하다고 볼 수 있다.
-// → 즉, 사용자가 원하는 정보를 요청하면, 서버가 데이터를 찾아서 전달해주는 것과 같습니다.
+// 1의 인덱스 값을 가진 바나나가 제거되었음
+// $fruitSelect.remove(1);
+// - select 요소의 두 번째 옵션(인덱스 1, 0부터 시작)을 삭제함
 
-// 웹에서 데이터를 받는 단계
-// 1. 클라이언트가 원하는 데이터 요청을 서버로부터 한다. (fetch 등으로 요청)
-// 2. 서버는 요청 받은 데이터를 데이터베이스에서 찾는다.
-// 3. 찾은 데이터를 꺼내서 서버에 전달한다.
-// 4. 서버는 알맞은 데이터를 클라이언트에 전달한다. (응답)
-// → 이 전체 과정이 API 호출의 흐름입니다.
+const $userName = document.getElementById('userName');
+// - id가 'userName'인 input 요소를 선택 (사용자 이름 입력란)
+const $password = document.getElementById('password');
+// - id가 'password'인 input 요소를 선택 (비밀번호 입력란)
 
-// json을 통해 fetch로 결과값 할당
-// let response = fetch("https://jsonplaceholder.typicode.com/users")
-//   .then((res) => console.log(res))
-//   .catch((err) => console.log(err));
-// 위 코드는 fetch로 서버에 요청을 보내고, 응답을 받은 후 콘솔에 출력합니다.
-// .then()은 요청이 성공했을 때 실행, .catch()는 실패했을 때 실행됩니다.
+const $loginBtn = document.querySelector('button');
+// - 첫 번째 button 요소를 선택 (로그인 버튼)
 
-// async, awiat를 활용하여 호출
-// const getData = async () => {
-//   let response = await fetch("https://jsonplaceholder.typicode.com/users");
-//   let data = await response.json();
-//   console.log(data);
-// };
+$loginBtn.addEventListener('click', () => {
+  // - 버튼을 클릭하면 아래 코드가 실행됨
+  console.log($userName.value); // input에 입력된 사용자 이름을 출력
+  console.log($password.value); // input에 입력된 비밀번호를 출력
+});
+
+$userName.value = "요다";
+// - input의 value 속성을 바꿔서, 입력창에 기본값을 미리 넣을 수 있음
+//   (페이지가 열리면 '요다'가 자동으로 입력됨)
+
+// 입력될때마다 값을 가져옴
+$password.addEventListener('input', (event) => {
+  // - 사용자가 비밀번호 입력창에 글자를 입력할 때마다 실행됨
+  // - 'input' 이벤트는 값이 바뀔 때마다(한 글자씩 입력/삭제할 때마다) 발생
+  console.log(event.target.value); // 현재 입력된 비밀번호를 출력
+});
+
+// ---------------------- 추가 설명 ----------------------
+// value 속성: input, select, textarea 등 폼 요소의 현재 값을 읽거나 쓸 때 사용
+//   예) input.value = 'abc'  // 입력창에 'abc'가 들어감
+//   예) let v = input.value  // 입력창에 사용자가 입력한 값을 읽어옴
 //
-// getData();
-// 위 코드는 async/await를 사용해 비동기 코드를 더 읽기 쉽게 작성한 예시입니다.
-// fetch로 데이터를 받아올 때까지 기다렸다가, json으로 변환한 뒤 콘솔에 출력합니다.
-
-// try, catch
-// 아래 코드는 async/await와 try-catch를 함께 사용해, 에러가 발생해도 안전하게 처리할 수 있도록 한 예시입니다.
-const getData = async () => {
-  try {
-    // fetch로 서버에 요청을 보내고, 응답을 기다림
-    let response = await fetch("https://jsonplaceholder.typicode.com/users");
-    // 응답(response)에서 JSON 데이터를 추출
-    let data = await response.json();
-    // 받아온 데이터를 콘솔에 출력
-    console.log(data);
-  } catch (err) {
-    // 에러가 발생하면 콘솔에 에러 내용 출력
-    console.log(err);
-  }
-};
-
-getData(); // 위에서 정의한 함수 실행 (실제로 API 호출 시작)
+// addEventListener('change', ...): select, input 등에서 값이 "최종적으로" 바뀌었을 때(포커스가 바뀌거나 엔터 등) 실행
+// addEventListener('input', ...): input, textarea 등에서 값이 "실시간"으로 바뀔 때마다 실행
+//
+// querySelector: CSS 선택자 문법으로 요소를 선택 (여러 개 중 첫 번째만)
+// getElementById: id로 요소를 선택 (항상 하나만)
+//
+// select.remove(index): select 요소의 옵션 중 index번째(0부터 시작)를 삭제
+//
+// 실무 팁:
+// - input.value로 입력값을 읽고 쓸 수 있음
+// - 버튼 클릭, 엔터 입력, 실시간 입력 등 다양한 이벤트를 조합해 폼을 자유롭게 제어할 수 있음
+// - form 태그의 submit 이벤트를 활용하면, 엔터로도 폼 전송이 가능
+// ------------------------------------------------------
