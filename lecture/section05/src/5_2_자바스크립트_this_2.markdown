@@ -1,177 +1,65 @@
+# 자바스크립트의 this - 2
 
-# 3_2 📝 DOM API 주요 메서드와 사용법
+자바스크립트에서 `this`는 함수가 어떻게 호출되었는지에 따라 가리키는 값이 달라집니다. 이번에는 **생성자 함수 호출**과 **콜백 함수 호출**에서의 this를 알아봅니다.
 
 ---
 
-## 1. getElementById
+## 1. 생성자 함수 호출에서의 this
 
-- 특정 id 속성을 가진 요소를 하나만 가져온다.
-- 반환값: 해당 id를 가진 요소 객체 (없으면 null)
+- **생성자 함수**는 객체를 만들기 위한 함수입니다.
+- `new` 키워드와 함께 호출하면, `this`는 **새로 생성되는 객체**를 가리킵니다.
+- 생성자 함수 내부에서 `this`에 값을 할당하면, 그 값이 새 객체에 저장됩니다.
+- 만약 `new` 없이 호출하면, `this`는 전역 객체(window/global)를 가리키게 되어 의도와 다르게 동작할 수 있습니다.
 
-```html
-<!-- 예시 HTML -->
-<div id="color">색상</div>
-```
+**예시:**
 
 ```js
-let $color = document.getElementById('color');
-console.log($color); // <div id="color">색상</div>
+function Cafe(menu) {
+  console.log(this); // new로 호출: this는 새 객체, 그냥 호출: 전역 객체
+  this.menu = menu;
+}
+
+let myCafe = new Cafe("latte"); // 생성자 함수로 호출, this는 새 객체
+console.log(myCafe); // { menu: "latte" }
+
+let notACafe = Cafe("americano"); // 그냥 함수로 호출, this는 전역 객체
+console.log(notACafe); // undefined (return문이 없으므로)
+// window.menu(브라우저) 또는 global.menu(Node.js)가 "americano"로 바뀜
 ```
 
 ---
 
-## 2. querySelector
+## 2. 콜백 함수 호출에서의 this
 
-- CSS 선택자 문법으로 일치하는 첫 번째 요소를 가져온다.
-- 반환값: 일치하는 첫 번째 요소 객체 (없으면 null)
+- **콜백 함수**는 다른 함수에 인자로 전달되어 나중에 호출되는 함수입니다.
+- 콜백 함수가 일반 함수로 호출되면, `this`는 **전역 객체(window/global)** 를 가리킵니다.
+- 객체의 메서드를 콜백으로 전달하면, `this`가 원래 객체가 아니라 전역 객체가 되어 의도와 다르게 동작할 수 있습니다.
+- 이런 문제를 해결하려면 `bind`, 화살표 함수, 또는 콜백 내부에서 this를 명시적으로 지정하는 방법을 사용합니다.
 
-```html
-<!-- 예시 HTML -->
-<div class="animal-info">동물 정보</div>
-<div id="age">3살</div>
-```
+**예시:**
 
 ```js
-let $animalInfo = document.querySelector('div.animal-info');
-console.log($animalInfo); // <div class="animal-info">동물 정보</div>
+const cafe = {
+  brand: "이디야",
+  menu: "",
+  setMenu: function (menu) {
+    this.menu = menu; // this가 cafe를 가리키면 cafe.menu가 바뀜
+  },
+};
 
-let ageElement = document.querySelector('div#age');
-console.log(ageElement); // <div id="age">3살</div>
+function getMenu(menu, callback) {
+  callback(menu); // 이때 this는 전역 객체
+}
+
+getMenu("핫초코", cafe.setMenu);
+console.log(cafe.menu); // '' (변하지 않음)
+// window.menu(브라우저) 또는 global.menu(Node.js)가 '핫초코'로 바뀜
 ```
 
 ---
 
-## 3. querySelectorAll
-
-- CSS 선택자 문법으로 일치하는 모든 요소를 NodeList로 반환한다.
-- 반환값: NodeList(유사 배열)
-
-```html
-<!-- 예시 HTML -->
-<div class="info-item">A</div>
-<div class="info-item">B</div>
-<div class="info-item">C</div>
-```
-
-```js
-let $infoItem = document.querySelectorAll('div.info-item');
-console.log($infoItem); // NodeList(3) [div.info-item, div.info-item, div.info-item]
-```
-
----
-
-## 4. getElementsByClassName
-
-- 특정 클래스를 가진 모든 요소를 HTMLCollection으로 반환한다.
-- 반환값: HTMLCollection(유사 배열)
-
-```html
-<!-- 예시 HTML -->
-<div class="info-item">A</div>
-<div class="info-item">B</div>
-<div class="info-item">C</div>
-```
-
-```js
-let $infoItem = document.getElementsByClassName('info-item');
-console.log($infoItem); // HTMLCollection(3) [div.info-item, div.info-item, div.info-item]
-```
-
----
-
-## 5. getElementsByTagName
-
-- 특정 태그명을 가진 모든 요소를 HTMLCollection으로 반환한다.
-- 반환값: HTMLCollection(유사 배열)
-
-```html
-<!-- 예시 HTML -->
-<div>A</div>
-<div>B</div>
-<div>C</div>
-```
-
-```js
-let $infoItem = document.getElementsByTagName('div');
-console.log($infoItem); // HTMLCollection(3) [div, div, div]
-```
-
----
-
-# 🛠️ DOM 요소 조작 예시
-
-## 1. className 변경
-
-```html
-<div id="name">이름</div>
-```
-
-```js
-let $name = document.getElementById('name');
-$name.className = 'dog-name';
-console.log($name); // <div id="name" class="dog-name">이름</div>
-console.log($name.className); // 'dog-name'
-```
-
----
-
-## 2. id 변경
-
-```html
-<div class="animal-info">동물 정보</div>
-```
-
-```js
-let $animalInfo = document.querySelector('div.animal-info');
-$animalInfo.id = "animal";
-console.log($animalInfo); // <div class="animal-info" id="animal">동물 정보</div>
-console.log($animalInfo.id); // 'animal'
-```
-
----
-
-## 3. classList로 클래스 추가/제거
-
-```html
-<div id="color" class="info-item">색상</div>
-```
-
-```js
-let $color = document.getElementById('color');
-$color.classList.remove('info-item'); // 'info-item' 클래스 제거
-$color.classList.add('dog-color');    // 'dog-color' 클래스 추가
-console.log($color.classList); // DOMTokenList(1) ['dog-color']
-```
-
----
-
-## 4. textContent로 텍스트 변경
-
-```html
-<div id="age">3살</div>
-```
-
-```js
-let $age = document.getElementById('age');
-$age.textContent = "5살";
-console.log($age); // <div id="age">5살</div>
-```
-
----
-
-## 5. style 속성으로 인라인 스타일 변경
-
-```html
-<div id="color">색상</div>
-```
-
-```js
-let $color = document.getElementById('color');
-$color.style.color = 'blue'; // 글자색을 파란색으로 변경
-$color.style.fontSize = "30px"; // 글자 크기를 30px로 변경
-// 결과: <div id="color" style="color: blue; font-size: 30px;">색상</div>
-```
-
----
-
-> 위의 DOM API들은 웹 페이지의 요소를 동적으로 탐색하고, 속성/클래스/스타일/텍스트 등을 자유롭게 변경할 수 있게 해줍니다. 콘솔에서 각 단계별로 결과를 확인하면, 실제로 요소가 어떻게 바뀌는지 쉽게 알 수 있습니다.
+> **정리:**
+>
+> - 생성자 함수에서 this는 새로 만들어지는 객체를 가리킨다.
+> - 콜백 함수로 전달된 메서드는 일반 함수처럼 호출되면 this가 전역 객체가 되어 의도와 다르게 동작할 수 있다.
+> - this 바인딩 문제는 bind, 화살표 함수 등으로 해결할 수 있다.
