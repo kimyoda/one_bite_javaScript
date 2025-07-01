@@ -1,55 +1,76 @@
-// 4_3 DOM API-2
-
-// 1. createElement()
-// - 새로운 HTML 요소(노드)를 자바스크립트로 생성할 때 사용합니다.
-// - 예시: 아래 코드는 <div> 태그를 새로 만듭니다.
-// let $type = document.createElement('div');
-// $type.className = 'info-item'; // class 속성 추가
-// $type.id = 'type'; // id 속성 추가
-// // $type.textContent = "말티즈"; // 텍스트를 바로 넣을 수도 있고,
-// let $typeText = document.createTextNode("말티즈"); // 텍스트 노드를 따로 만들 수도 있습니다.
-
-// - createTextNode(): 텍스트만 담긴 노드를 만듭니다. (태그 없이 글자만!)
-
-// - appendChild(): 부모 노드의 맨 마지막 자식으로 새로운 노드를 추가합니다.
-//   예시: $animalInfo.appendChild($type); // $animalInfo의 마지막에 $type(div)을 추가
-//   예시: $type.appendChild($typeText); // $type(div)의 마지막에 텍스트 노드 추가
-
-// - DOM 트리란? : HTML 문서가 계층(부모-자식) 구조로 이루어진 것을 말합니다.
-//   appendChild로 부모-자식 관계를 직접 만들 수 있습니다.
-
-// let $animalInfo = document.querySelector('div.animal-info');
-// $animalInfo.appendChild($type);
-// $type.appendChild($typeText);
-// console.log($type); // <div class="info-item" id="type">말티즈</div>
-// console.log($typeText); // 말티즈 (텍스트 노드)
-
-// ---
-// [새로운 버튼 요소 만들기]
-// - 버튼도 위와 똑같이 만들 수 있습니다.
-// let $button = document.createElement('button'); // <button> 생성
-// $button.id = "new-button"; // id 추가
-// $button.classList.add('new-button'); // class 추가
-// $button.textContent = "버튼"; // 버튼에 표시될 텍스트
-// $button.addEventListener("click", () => {
-//   window.alert("클릭"); // 버튼 클릭 시 알림창
-// });
+// 5_3 화살표 함수
 //
-// let $animalInfo = document.querySelector('div.animal-info');
-// $animalInfo.appendChild($button); // 버튼을 화면에 추가
-//
-// console.log($animalInfo); // 버튼이 추가된 전체 div가 출력됨
+// [핵심 개념]
+// - 화살표 함수(=>)는 function 키워드로 만든 함수와 this 동작이 다릅니다.
+// - 화살표 함수는 자신만의 this를 가지지 않고, 상위 스코프의 this를 그대로 사용합니다.
+// - 일반 함수(function)는 호출 방식에 따라 this가 달라집니다.
 
-// ---
-// [이벤트 리스너]
-// - addEventListener("이벤트명", 함수): 해당 요소에 이벤트(예: 클릭, 마우스오버 등)가 발생하면 함수를 실행합니다.
-// - 위 예시에서는 버튼을 클릭하면 "클릭"이라는 알림창이 뜹니다.
+const func = () => {
+  // [설명] 이 함수는 화살표 함수입니다.
+  // 화살표 함수는 자신이 선언된 위치의 this를 사용합니다.
+  // (여기서는 전역 스코프의 this)
+  console.log("hello javascript");
+};
 
-// ---
-// [innerHTML]
-// - 요소의 HTML 내용을 문자열로 읽거나, 새 HTML로 한 번에 바꿀 수 있습니다.
-// - 예시: 아래 코드는 div.animal-info의 내용을 <div id="name">고양이</div>로 통째로 바꿉니다.
-let $animalInfo = document.querySelector('div.animal-info');
-$animalInfo.innerHTML = '<div id="name">고양이<div>'
-// console.log($animalInfo.innerHTML); // <div id="name">고양이</div>가 출력됨
-console.log($animalInfo); // 변경된 전체 요소가 출력됨
+function funcEx() {
+  // [설명] 이 함수는 function 키워드로 만든 일반 함수입니다.
+  // 일반 함수는 호출 방법에 따라 this가 달라집니다.
+  console.log("hello javascrit");
+}
+
+// [예시1] 콜백 함수에서의 this 차이
+// 아래는 일반 함수(주석처리)와 화살표 함수의 차이 예시입니다.
+
+// function Counter() {
+//   this.count = 0;
+//   setInterval(function () {
+//     // [문제] 이 콜백의 this는 전역 객체(window)를 가리킵니다.
+//     // 그래서 this.count는 undefined, undefined++는 NaN이 됩니다.
+//     this.count++;
+//     console.log(this.count); // NaN
+//   }, 2000);
+// }
+
+function Counter() {
+  this.count = 0;
+  setInterval(() => {
+    // [설명] 화살표 함수는 Counter 생성자의 this를 그대로 사용합니다.
+    // 즉, 여기서의 this는 Counter의 인스턴스를 가리킵니다.
+    this.count++;
+    console.log(this.count); // 1, 2, 3, ...
+  }, 2000);
+}
+// 사용 예시:
+// const counter = new Counter();
+// 위 코드를 실행하면 2초마다 1씩 증가하는 숫자가 출력됩니다.
+
+// [예시2] 객체의 메서드에서의 this와 화살표 함수
+const cafe = {
+  brand: "이디야",
+  menu: "아메리카노",
+  print: () => {
+    // [문제] 이 print는 화살표 함수로 선언되었습니다.
+    // 화살표 함수는 cafe 객체의 this를 사용하지 않고,
+    // cafe가 선언된 상위(전역) 스코프의 this를 사용합니다.
+    // 브라우저 환경에서는 window, strict 모드에서는 undefined가 됩니다.
+    console.log(this); // window 또는 undefined
+  },
+};
+// [주의] 객체의 메서드는 반드시 일반 함수로 선언해야 this가 객체 자신을 가리킵니다.
+cafe.print();
+
+// [올바른 예시]
+const cafe2 = {
+  brand: "스타벅스",
+  menu: "라떼",
+  print: function () {
+    // [정답] 일반 함수로 선언하면 this는 cafe2 객체 자신을 가리킵니다.
+    console.log(this); // cafe2 객체
+  },
+};
+cafe2.print();
+
+// [정리]
+// - 화살표 함수는 자신만의 this가 없고, 상위 스코프의 this를 사용합니다.
+// - 객체의 메서드는 반드시 일반 함수로 선언해야 this가 객체 자신을 가리킵니다.
+// - 콜백 함수에서 this를 유지하고 싶을 때 화살표 함수를 사용할 수 있습니다.
