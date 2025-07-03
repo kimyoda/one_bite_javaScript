@@ -1,22 +1,19 @@
-const API_URL = "https://animal-api-two.vercel.app/";
+import App from "./App"; // App 컴포넌트 import (앱의 루트 컴포넌트)
 
-const $content = document.querySelector("div.content");
-let template = "";
+const $app = document.getElementById("app"); // index.html의 #app 요소를 가져옴
 
-const getData = async () => {
-  const res = await fetch(API_URL);
-  try {
-    if (res) {
-      let data = await res.json();
-      console.log(data);
-      data.photos.forEach((el) => {
-        template += `<img src=${el.url}></img>`;
-      });
-      $content.innerHTML = template;
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
+new App($app); // App 컴포넌트 인스턴스 생성 및 마운트
 
-getData();
+// 생성자 함수 예시 코드
+// function Car() {
+//   this.name = "BMW";
+//   this.color = "black";
+//   this.print = function () {
+//     console.log(`${this.name} 색상은 ${this.color}`);
+//   };
+// }
+
+// const myCar = new Car();
+// myCar.print();
+
+// index.js는 앱의 진입점 역할을 하며, App 컴포넌트를 통해 전체 UI를 초기화한다.
