@@ -1,4 +1,4 @@
-import App from "./App"; // App 컴포넌트 import (앱의 루트 컴포넌트)
+import App from "./App.js"; // App 컴포넌트 import (앱의 루트 컴포넌트)
 
 const $app = document.getElementById("app"); // index.html의 #app 요소를 가져옴
 
