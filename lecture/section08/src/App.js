@@ -9,7 +9,8 @@ export default function App($app) {
   // - currentTab: 현재 선택된 탭 이름
   // - photos: 현재 탭에 해당하는 사진 데이터 배열
   this.state = {
-    currentTab: "all", // 기본값: 전체 탭
+    // [오늘 추가] 현재 URL 경로에 따라 초기 탭을 결정 (새로고침/직접 진입 시에도 URL 반영)
+    currentTab: window.location.pathname.replace("/", "") || "all",
     photos: [], // 사진 데이터는 비어있음(초기값)
   };
 
@@ -19,15 +20,9 @@ export default function App($app) {
     $app, // 루트 엘리먼트 전달
     initialState: "", // TabBar의 초기 상태(선택된 탭 없음)
     onClick: async (name) => {
-      // 탭 클릭 시 실행되는 비동기 함수
-      // 1) 상태의 currentTab을 클릭한 탭으로 변경
-      // 2) 해당 탭에 맞는 사진 데이터를 API에서 받아옴
-      // 3) setState로 상태를 갱신(하위 컴포넌트도 자동 갱신)
-      this.setState({
-        ...this.state, // 기존 상태 유지
-        currentTab: name, // 선택된 탭으로 상태 업데이트
-        photos: await request(name === "all" ? '' : name), // API에서 해당 탭의 사진 데이터 요청
-      });
+      // [오늘 추가] 탭 클릭 시 SPA 방식으로 URL을 변경하고, 해당 탭의 데이터를 불러옴
+      history.pushState(null, `${name} 사진`, `/${name}`); // URL 변경 (SPA)
+      this.updateContent(name); // 해당 탭 데이터 갱신
     },
   });
 
@@ -45,26 +40,30 @@ export default function App($app) {
     tabBar.setState(this.state.currentTab); // TabBar에 현재 탭 상태 전달
     content.setState(this.state.photos); // Content에 사진 데이터 전달
   };
-}
 
-// (참고) 아래 코드는 실제로 동작하지 않음. 
-// App 컴포넌트 외부에서 this.setState를 쓸 수 없음.
-// 실제 초기 데이터 로딩은 App 생성 시 내부에서 처리해야 함.
-// 아래 코드는 예시로 남겨둔 것임.
-/*
-const init = async () => {
-  try {
-    // 앱 시작 시 전체 탭의 사진 데이터를 가져와서 초기 상태 설정
-    const initialPhotos = await request();
-    this.setState({
-      ...this.state,
-      photos: initialPhotos,
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  this.updateContent = async (tabName) => {
+    try {
+      // [오늘 추가] 탭 이름에 따라 API 요청 및 상태 갱신
+      const currentTab = tabName === "all" ? "" : tabName;
+      const photos = await request(currentTab); // API 요청
+      this.setState({
+        ...this.state,
+        currentTab: tabName,
+        photos: photos,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // [오늘 추가] 뒤로가기/앞으로가기(popstate) 시, URL에 맞는 탭 데이터로 갱신
+  window.addEventListener("popstate", async () => {
+    this.updateContent(window.location.pathname.replace("/", ""));
+  });
+
+  const init = async () => {
+    this.updateContent(this.state.currentTab);
+  };
 
   init();
-};
-*/
-// App 컴포넌트는 전체 앱의 구조를 잡고, 하위 컴포넌트(TabBar, Content)를 조립하는 역할을 한다.
+}
