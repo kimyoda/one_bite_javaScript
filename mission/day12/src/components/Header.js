@@ -18,11 +18,12 @@ export default function Header({
   this.template = () => {
     const { currentPage, searchWord } = this.state;
 
+    // 타이틀(로고) 영역 생성
     let temp = `<div class='header-content' id="title">
     <img src='/src/img/ball.webp' width=40px height=40px></img>
     포켓몬 도감</div>`;
 
-    // 메인 페이지일 때만 검색창 표시
+    // 메인 페이지일 때만 검색창 표시 (상세 페이지에서는 검색창 숨김)
     if (!currentPage.includes("/detail")) {
       temp += `<div class="search">
         <input type="text" placeholder="포켓몬을 검색하세요!" id="search" autocomplete="off" value="${decodeURIComponent(
@@ -39,7 +40,7 @@ export default function Header({
   this.render = () => {
     this.$target.innerHTML = this.template();
 
-    // 타이틀 클릭 시 홈으로 이동
+    // 타이틀 클릭 시 홈으로 이동 (handleClick 호출)
     const $title = document.getElementById("title");
     $title.addEventListener("click", () => {
       this.handleClick();
@@ -50,13 +51,13 @@ export default function Header({
       const $searchInput = document.getElementById("search");
       const $searchButton = document.getElementById("search-button");
 
-      // 검색 버튼 클릭 시 검색 실행
+      // 검색 버튼 클릭 시 handleSearch 함수 실행 (검색어 전달)
       $searchButton.addEventListener("click", () => {
         this.handleSearch($searchInput.value);
       });
 
       // 엔터 키로도 검색 가능하게 추가
-      // 사용자가 검색 input에서 엔터(Enter)를 누르면 검색이 실행됩니다.
+      // 사용자가 검색 input에서 엔터(Enter)를 누르면 handleSearch가 실행되어 검색이 동작함
       $searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           this.handleSearch($searchInput.value);
@@ -65,7 +66,7 @@ export default function Header({
     }
   };
 
-  // 상태를 변경하고, 화면을 다시 렌더링하는 함수
+  // setState: 상태를 변경하고, 화면을 다시 렌더링하는 함수
   this.setState = (newState) => {
     this.state = newState;
     this.render();
